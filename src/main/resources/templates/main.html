@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Addressbook</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+<h1>Create your addressbook</h1><br>
+
+<script>
+    $(document).ready(function () {
+            $(".addressbook").show();
+            $(".submitbtn").click(function () {
+                $.ajax({
+                    url: "/addressbook",
+                    method: "POST"
+                }).then(function (data) {
+                    let id = data.id;
+                    alert("Addressbook with id " + id + " is created!");
+                    window.location.href = "/addressbook/" + id;
+                })
+            })
+
+        }
+    )
+</script>
+<noscript>
+    <form action="#" th:action="@{/addressbook}" th:object="${addressbook}" method="post">
+        <button name="create" value="create an addressbook">Creeate (AJAX)</button>
+    </form>
+
+</noscript>
+<div class="addressbook" style="display: none">
+    <button class="submitbtn">Create an addressbook (no script)</button>
+</div>
+
+</body>
+</html>

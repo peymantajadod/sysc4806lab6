@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Buddies of addressbook </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<h1 th:text="'Here is the list of buddies of the addressbook ' + ${id}"/>
+<script>
+    $(document).ready(function (){
+        $("buddyinfos").show();
+        let aBookId = window.location.pathname.split("/").pop();
+        $.ajax({
+            url:"/addressbook/" + aBookId,
+            method: "GET"
+        }).then(function (data){
+            $("buddies").text(JSON.stringify(data.buddies));
+        })
+        $(".addBuddy").click(function(){
+
+            $.ajax({
+                url: "/addressbook/"+aBookId+"/buddyinfo/",
+                method: "POST",
+                data: JSON.stringify({
+                    name: $(".name").val(),
+                    number: $(".address").val(),
+                    number: $(".number").val(),
+                    number: $(".age").val()
+                }),
+                contentType: 'application/json'
+
+            }).then(function(data) {
+                $(".buddies").text(JSON.stringify(data.buddies));
+            })
+        })
+    })
+</script>
+<noscript>
+    <table>
+        <tbody>
+        <tr th:each="buddy: ${buddies}">
+            <td th:text="${buddy.getName()}"></td>
+            <td th:text="${buddy.getAddress()}"></td>
+            <td th:text="${buddy.getNumber()}"></td>
+            <td th:text="${buddy.getAge()}"></td>
+        </tr>
+        </tbody>
+    </table><br>
+
+    <form action="#" th:action="@{'/addressbookgui/' + ${id}}" th:object="${buddyInfo}" method="post">
+        <p>Name: <input type="text" th:field="*{name}" /></p>
+        <p>Address: <input type="text" th:field="*{address}" /></p>
+        <p>Number: <input type="text" th:field="*{number}" /></p>
+        <p>Age: <input type="text" th:field="*{age}" /></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+</noscript>
+
+<div class="buddyinfos" style="display: none">
+    <p class="buddies"></p>
+    <p>Name: <input class="name"/></p>
+    <p>Address: <input class="address"/></p>
+    <p>Number: <input class="number"/></p>
+    <p>age: <input class="age"/></p>
+    <button class="addBuddy">
+        Create Buddy Info
+    </button>
+</div>
+
+</body>
+</html>
